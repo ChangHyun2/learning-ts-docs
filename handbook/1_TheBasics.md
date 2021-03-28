@@ -22,7 +22,7 @@ message();
 ## Static Type Checking
 
 위와 같은 원시 타입은 `typeof` 연산자를 통해 type을 확인할 수 있지만  
-js는 런타임에서 타입을 체크하기 때문에(동적 타이핑) 런타임 이전에 타입을 체킹할 순 없다.  
+js는 런타임에서 타입을 체크하기 때문에(동적 타이핑) 런타임 이전에 타입을 체킹할 순 없다.
 
 함수의 경우 동적으로 내부 로직이 실행되기 때문에 타입에 의한 이슈가 발생하기 쉽다.
 
@@ -33,9 +33,9 @@ function fn(x){
 }
 ```
 
-이러한 JS의 단점을 보완하기 위해 Static type system을 사용하고자 TS가 개발되었다.
+JS의 동적 타이핑 시스템의 단점을 보완하기 위해 Static type system을 사용하고자 TS가 개발되었다.
 
-## non Exception Failures
+## Non Exception Failures
 
 js에서는 객체의 잘못된 속성에 참조할 경우 undefined를 리턴한다.
 
@@ -55,25 +55,40 @@ user.location; // returns undefined
 user.location; // Property 'location' does not exist on type '{ name: string; age: number; }'.
 ```
 
-오타 확인이 수월해진다.
+ts는 위와 같이 loose한 에러 체킹을 수행하는 js의 단점을 보완한다.
 
+오타를 쉽게 찾을 수 있고
 ```js
+const announcement = "Hello World!";
+
+// How quickly can you spot the typos?
+announcement.toLocaleLowercase();
 announcement.toLocalLowerCase();
 
+// We probably meant to write this...
+announcement.toLocaleLowerCase();
+```
+
+실행되지 않은 함수를 찾아낼 수 있으며
+```js
 function flipCoin() {
   // Meant to be Math.random()
-  return Math.random < 0.5;  
-// Operator '<' cannot be applied to types '() => number' and 'number'.
+  return Math.random < 0.5;
+Operator '<' cannot be applied to types '() => number' and 'number'.
 }
+```
 
+기본적인 논리 에러를 발견할 수 있다.
+```js
 const value = Math.random() < 0.5 ? "a" : "b";
 if (value !== "a") {
   // ...
 } else if (value === "b") {
-  // This condition will always return 'false' since the types '"a"' and '"b"' have no overlap.
+This condition will always return 'false' since the types '"a"' and '"b"' have no overlap.
   // Oops, unreachable
 }
 ```
+
 
 ## Types for Tooling
 
@@ -105,6 +120,7 @@ tsc --noEmitOnError hello.ts
 
 type annotation
 
+ts를 토앻 값에 타입을 명시할 수 있다.
 ```js
 function greet(person: string, date: Date) {
   console.log(`Hello ${person}, today is ${date.toDateString()}!`);
